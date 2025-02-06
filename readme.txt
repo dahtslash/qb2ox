@@ -1,5 +1,5 @@
 Oringal script  by smuggod https://github.com/TheSmugGod/qb2ox
----Added by dotslash
+---Added by dahtslash
 Adjusted the script to handle mixed itemlist cases such as: "Brackets [""] and [''].  
 Added some new regex logic to handle off spaces, oddly tabulated gaps, and shouleClose checks causing it to fail.  
 Thanks for the original script TheSmugGod, 
