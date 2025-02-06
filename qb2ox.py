@@ -4,9 +4,10 @@ import re
 with open('input.txt', 'r') as file:
     content = file.read()
 
-# Regex pattern to match items with flexible spacing
+# Updated regex pattern to match items with flexible spacing
+# Added '-' to the character class so that hyphens in item names are included.
 item_pattern = re.compile(
-    r'\s*([\w\[\]\'"]+)\s*=\s*\{(.*?)\},?', re.DOTALL
+    r'\s*([\w\-\[\]\'"]+)\s*=\s*\{(.*?)\},?', re.DOTALL
 )
 
 # Corrected regex for key-value pairs (handles optional commas, spaces, and line breaks)
@@ -18,14 +19,15 @@ attribute_pattern = re.compile(
 output = []
 
 for item_match in item_pattern.finditer(content):
+    # Remove the enclosing brackets/quotes to get the clean item name.
     item_name = item_match.group(1).strip("[]'\"")
     attributes = item_match.group(2)
 
-    # Extract key-value pairs
+    # Extract key-value pairs.
     attribute_pairs = attribute_pattern.findall(attributes)
     attr_dict = {
         key: (val1 or val2 or val3).strip()
-        for key, val1, val2, val3 in attribute_pairs  # Expecting only 4 groups
+        for key, val1, val2, val3 in attribute_pairs
     }
 
     # Check required fields: label and weight are required.
