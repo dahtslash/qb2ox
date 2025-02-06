@@ -9,7 +9,7 @@ Example Use:
 python3 qb2ox.py 
 
 Example Bash quickie to compare: 
-&& cat output.lua | grep { | awk '{print $1}' | awk -F"'" '{print $2}' | wc -l && cat input.txt | grep { | awk '{print $1}' | awk -F"'" '{print $1}' | wc -l
+python3 qb2ox.py && cat output.lua | grep { | awk '{print $1}' | awk -F"'" '{print $2}' | wc -l && cat input.txt | grep { | awk '{print $1}' | awk -F"'" '{print $1}' | wc -l
 
 https://github.com/dahtslash
 
