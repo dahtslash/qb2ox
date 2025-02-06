@@ -1,48 +1,54 @@
-import re
-
-# Read the entire input file
-with open('input.txt', 'r') as file:
-    content = file.read()
-
-# Regex pattern to match items with flexible spacing
-item_pattern = re.compile(
-    r'\s*([\w\[\]\'"]+)\s*=\s*\{(.*?)\},?', re.DOTALL
-)
-
-# Corrected regex for key-value pairs (handles optional commas, spaces, and line breaks)
-attribute_pattern = re.compile(
-    r'\s*[\[\]\'"]*([\w_]+)[\[\]\'"]*\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^,\n\}]+))\s*(?:,|$)'
-)
-
-# Process items
-output = []
-
-for item_match in item_pattern.finditer(content):
-    item_name = item_match.group(1).strip("[]'\"")
-    attributes = item_match.group(2)
-
-    # Extract key-value pairs
-    attribute_pairs = attribute_pattern.findall(attributes)
-    attr_dict = {
-        key: (val1 or val2 or val3).strip()
-        for key, val1, val2, val3 in attribute_pairs  # Expecting only 4 groups
-    }
-
-    # Check required fields: label and weight are required.
-    label = attr_dict.get('label')
-    weight = attr_dict.get('weight')
-    # If shouldClose is missing, default it to 'false'
-    shouldClose = attr_dict.get('shouldClose', 'false')
-
-    if label and weight:
-        output.append(f"['{item_name}'] = {{\n"
-                      f"    label = '{label}',\n"
-                      f"    weight = {weight},\n"
-                      f"    stack = false,\n"
-                      f"    close = {shouldClose}\n"
-                      f"}},\n")
-
-# Write output to output.lua
-with open('output.lua', 'w') as file:
-    file.writelines(output)
-
+['phone'] = {
+    label = 'Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['phone_white'] = {
+    label = 'White Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['phone_gold'] = {
+    label = 'Gold Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['phone_red'] = {
+    label = 'Red Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['phone_blue'] = {
+    label = 'Blue Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['phone_green'] = {
+    label = 'Green Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['phone_pink'] = {
+    label = 'Pink Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['phone_greenLight'] = {
+    label = 'Green Light Phone',
+    weight = 700,
+    stack = false,
+    close = true
+},
+['powerbank'] = {
+    label = 'Powerbank',
+    weight = 500,
+    stack = false,
+    close = true
+},

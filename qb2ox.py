@@ -1,37 +1,48 @@
-# Read input from input.txt
-with open('input.txt', 'r') as file:
-    lines = file.readlines()
+import re
 
-# Process lines
+# Read the entire input file
+with open('input.txt', 'r') as file:
+    content = file.read()
+
+# Regex pattern to match items with flexible spacing
+item_pattern = re.compile(
+    r'\s*([\w\[\]\'"]+)\s*=\s*\{(.*?)\},?', re.DOTALL
+)
+
+# Corrected regex for key-value pairs (handles optional commas, spaces, and line breaks)
+attribute_pattern = re.compile(
+    r'\s*[\[\]\'"]*([\w_]+)[\[\]\'"]*\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^,\n\}]+))\s*(?:,|$)'
+)
+
+# Process items
 output = []
-for line in lines:
-    line = line.strip()
-    if line and line.endswith('},'):
-        parts = line.split(' = {')
-        if len(parts) == 2:
-            item_name = parts[0].strip()
-            attributes = parts[1].strip().strip('},')
-            attribute_pairs = [pair.strip() for pair in attributes.split(',')]
-            label = weight = shouldClose = None
-            for pair in attribute_pairs:
-                key_value = pair.split(' = ')
-                if len(key_value) == 2:
-                    key = key_value[0].strip()
-                    value = key_value[1].strip().strip('"')
-                    if key == 'label':
-                        label = value
-                    elif key == 'weight':
-                        weight = value
-                    elif key == 'shouldClose':
-                        shouldClose = value
-            if label is not None and weight is not None and shouldClose is not None:
-                output.append(f"['{item_name}'] = {{\n"
-                              f"    label = '{label}',\n"
-                              f"    weight = {weight},\n"
-                              f"    stack = false,\n"
-                              f"    close = {shouldClose}\n"
-                              f"}},\n")
+
+for item_match in item_pattern.finditer(content):
+    item_name = item_match.group(1).strip("[]'\"")
+    attributes = item_match.group(2)
+
+    # Extract key-value pairs
+    attribute_pairs = attribute_pattern.findall(attributes)
+    attr_dict = {
+        key: (val1 or val2 or val3).strip()
+        for key, val1, val2, val3 in attribute_pairs  # Expecting only 4 groups
+    }
+
+    # Check required fields: label and weight are required.
+    label = attr_dict.get('label')
+    weight = attr_dict.get('weight')
+    # If shouldClose is missing, default it to 'false'
+    shouldClose = attr_dict.get('shouldClose', 'false')
+
+    if label and weight:
+        output.append(f"['{item_name}'] = {{\n"
+                      f"    label = '{label}',\n"
+                      f"    weight = {weight},\n"
+                      f"    stack = false,\n"
+                      f"    close = {shouldClose}\n"
+                      f"}},\n")
 
 # Write output to output.lua
 with open('output.lua', 'w') as file:
     file.writelines(output)
+
